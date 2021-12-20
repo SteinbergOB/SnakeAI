@@ -46,7 +46,7 @@ class Agent:
 
     def get_state(self):
         snake = self.env.snake
-        food = self.env.food
+        food = self.env.food.pt
         point_l = Point(snake.head.x - 20, snake.head.y)
         point_r = Point(snake.head.x + 20, snake.head.y)
         point_u = Point(snake.head.x, snake.head.y - 20)
@@ -126,7 +126,6 @@ class Agent:
 
             if done:
                 # train long memory, plot result
-                self.env.reset()
                 self.n_games += 1
                 self.train_long_memory()
 
@@ -141,6 +140,7 @@ class Agent:
                 self.mean_score = self.total_score / self.n_games
                 self.plot_mean_scores.append(self.mean_score)
                 plot(self.plot_scores, self.plot_mean_scores)
+                self.env.reset()
 
 
 if __name__ == '__main__':

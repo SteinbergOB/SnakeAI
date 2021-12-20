@@ -29,7 +29,7 @@ SPEED = 100
 
 
 class Environment:
-    def __init__(self, window_width=640, window_height=480, cell_size=20):
+    def __init__(self, window_width=200, window_height=200, cell_size=20):
         self.fieldW = window_width//cell_size
         self.fieldH = window_height//cell_size
         self.cellSize = cell_size
@@ -48,11 +48,12 @@ class Environment:
     def reset(self):
         # init game state
         self.snake = Snake(self.fieldW//2, self.fieldH//2)
-        self.food = Food(self.fieldW, self.fieldH)
-        while self.food in self.snake.body:
-            self.food.place_food()
+        self.food = Food(self.fieldW, self.fieldH, self.snake.head.x + 1, self.snake.head.y + 1)
+#        while self.food in self.snake.body:
+#            self.food.place_food()
 
         self.frame_iteration = 0
+        self.score = 0
 
     def play_step(self, action):
         self.frame_iteration += 1
@@ -75,10 +76,10 @@ class Environment:
             return reward, game_over
 
         # 4. place new food or just move
-        if self.snake.head == self.food:
+        if self.snake.head == self.food.pt:
             self.score += 1
             reward = 10
-            while self.food in self.snake.body:
+            while self.food.pt in self.snake.body:
                 self.food.place_food()
         else:
             self.snake.body.pop()
@@ -101,10 +102,10 @@ class Environment:
 #            pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x*BLOCK_SIZE + 4, pt.y*BLOCK_SIZE + 4,
 #                                                              BLOCK_SIZE-2*4, BLOCK_SIZE-2*4))
 
-        pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x * self.cellSize, self.food.y * self.cellSize,
+        pygame.draw.rect(self.display, RED, pygame.Rect(self.food.pt.x * self.cellSize, self.food.pt.y * self.cellSize,
                                                         self.cellSize, self.cellSize))
 
-        text = font.render("Score: " + str(self.snake.score), True, WHITE)
+        text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
         pygame.display.flip()
 
@@ -163,13 +164,10 @@ class Snake:
 
 
 class Food:
-    def __init__(self, field_width, field_height):
-        self.x = None
-        self.y = None
+    def __init__(self, field_width, field_height, x, y):
+        self.pt = Point(x, y)
         self.fieldW = field_width
         self.fieldH = field_height
-        self.place_food()
 
     def place_food(self):
-        self.x = random.randint(0, self.fieldW - 1)
-        self.y = random.randint(0, self.fieldH - 1)
+        self.pt = Point(random.randint(0, self.fieldW - 1), random.randint(0, self.fieldH - 1))
