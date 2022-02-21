@@ -25,11 +25,11 @@ BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
 BLACK = (0, 0, 0)
 
-SPEED = 100
+SPEED = 200
 
 
 class Environment:
-    def __init__(self, window_width=200, window_height=200, cell_size=20):
+    def __init__(self, window_width=400, window_height=400, cell_size=20):
         self.fieldW = window_width//cell_size
         self.fieldH = window_height//cell_size
         self.cellSize = cell_size
@@ -153,7 +153,7 @@ class Snake:
         if self.head.x > w - 1 or self.head.x < 0 or self.head.y > h - 1 or self.head.y < 0:
             return True
         # hits itself
-        if self.head.x in self.body[1:]:  # TODO remove last element check
+        if self.head in self.body[1:]:  # TODO remove last element check
             return True
         return False
 
