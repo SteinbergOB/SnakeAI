@@ -5,8 +5,7 @@ from collections import namedtuple
 import numpy as np
 
 pygame.init()
-font = pygame.font.Font('arial.ttf', 25)
-# font = pygame.font.SysFont('arial', 25)
+font = pygame.font.SysFont('Arial', 25, bold=True)
 
 
 class Direction(Enum):
@@ -29,7 +28,7 @@ SPEED = 200
 
 
 class Environment:
-    def __init__(self, window_width=400, window_height=400, cell_size=20):
+    def __init__(self, window_width=640, window_height=480, cell_size=20):
         self.fieldW = window_width//cell_size
         self.fieldH = window_height//cell_size
         self.cellSize = cell_size
@@ -37,23 +36,21 @@ class Environment:
         self.display = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
-        self.frame_iteration = 0
 
         self.snake = None
         self.food = None
         self.score = 0
 
+        self.frame_iteration = 0
+
         self.reset()
 
     def reset(self):
-        # init game state
         self.snake = Snake(self.fieldW//2, self.fieldH//2)
         self.food = Food(self.fieldW, self.fieldH, self.snake.head.x + 1, self.snake.head.y + 1)
-#        while self.food in self.snake.body:
-#            self.food.place_food()
+        self.score = 0
 
         self.frame_iteration = 0
-        self.score = 0
 
     def play_step(self, action):
         self.frame_iteration += 1
@@ -64,8 +61,7 @@ class Environment:
                 quit()
         
         # 2. move
-        self.snake.move(action)  # update the head
-        self.snake.body.insert(0, self.snake.head)
+        self.snake.move(action)
         
         # 3. check if game over
         reward = 0
@@ -94,13 +90,11 @@ class Environment:
         self.display.fill(BLACK)
 
         pygame.draw.rect(self.display, BLUE2, pygame.Rect(self.snake.head.x * self.cellSize,
-                                                          self.snake.head.y*self.cellSize,
+                                                          self.snake.head.y * self.cellSize,
                                                           self.cellSize, self.cellSize))
         for pt in self.snake.body[1:]:
             pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x * self.cellSize, pt.y * self.cellSize,
                                                               self.cellSize, self.cellSize))
-#            pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x*BLOCK_SIZE + 4, pt.y*BLOCK_SIZE + 4,
-#                                                              BLOCK_SIZE-2*4, BLOCK_SIZE-2*4))
 
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.pt.x * self.cellSize, self.food.pt.y * self.cellSize,
                                                         self.cellSize, self.cellSize))
@@ -116,8 +110,6 @@ class Snake:
 
         self.head = Point(w, h)
         self.body = [self.head, Point(self.head.x - 1, self.head.y), Point(self.head.x - 2, self.head.y)]
-
-        self.score = 0
 
     def move(self, action):
         # [straight, right, left]
@@ -147,6 +139,7 @@ class Snake:
             y -= 1
 
         self.head = Point(x, y)
+        self.body.insert(0, self.head)
 
     def is_collision(self, w, h):
         # hits boundary
