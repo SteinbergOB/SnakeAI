@@ -4,7 +4,7 @@ import numpy as np
 from collections import deque
 from environment import Environment, Direction, Point
 from model import LinearQNet, QTrainer
-from helper import plot
+from statistics import plot
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
@@ -115,7 +115,7 @@ class Agent:
             action_old = self.get_action(state_old)
 
             # perform move and get new state
-            reward, done = self.env.play_step(action_old)
+            reward, done = self.env.change_all(action_old)
             state_new = self.get_state()
 
             # train short memory

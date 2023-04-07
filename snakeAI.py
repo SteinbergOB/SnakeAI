@@ -115,7 +115,7 @@ class Agent:
             action = self.get_action(state)
 
             # perform move and get new state
-            reward, done = self.env.play_step(action)
+            reward, done = self.env.change_all(action)
             state_new = self.get_state()
 
             # train short memory
@@ -129,7 +129,7 @@ class Agent:
                 self.n_games += 1
                 self.train_long_memory()
 
-                if  self.record < self.env.score:
+                if self.record < self.env.score:
                     self.record = self.env.score
                     self.net.save()
 

@@ -29,9 +29,9 @@ SPEED = 200
 
 class Environment:
     def __init__(self, window_width=640, window_height=480, cell_size=20):
+        self.cellSize = cell_size
         self.fieldW = window_width//cell_size
         self.fieldH = window_height//cell_size
-        self.cellSize = cell_size
         # init display
         self.display = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption('Snake')
@@ -52,7 +52,7 @@ class Environment:
 
         self.frame_iteration = 0
 
-    def play_step(self, action):
+    def change_all(self, action):
         self.frame_iteration += 1
         # 1. collect user input
         for event in pygame.event.get():
@@ -81,12 +81,12 @@ class Environment:
             self.snake.body.pop()
         
         # 5. update ui and clock
-        self.update_ui()
+        self.draw_all()
         self.clock.tick(SPEED)
         # 6. return game over and score
         return reward, game_over
 
-    def update_ui(self):
+    def draw_all(self):
         self.display.fill(BLACK)
 
         pygame.draw.rect(self.display, BLUE2, pygame.Rect(self.snake.head.x * self.cellSize,
